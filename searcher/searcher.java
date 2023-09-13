@@ -2,58 +2,16 @@ package searcher;
 
 import java.io.*;
 import java.util.*;
+import searcher.graph;
 
 public class searcher {
-    public static List<String> index() {
-        String inputFile = "GEODATASOURCE-COUNTRY-BORDERS.CSV";
-        List<String> countries = new ArrayList<>();
+    public static Set<String> countries = graph.vertices();
+    public static Map<String, Set<String>> borders = graph.adjacencyList();
 
-        try {
-            Scanner sc = new Scanner(new File(inputFile));
-            String code = sc.nextLine();
-            while (sc.hasNext())
-            {
-                String[] line = sc.nextLine().split(",");
-                String newCode = line[1];
-                if (!newCode.equals(code)) {
-                    countries.add(newCode);
-                    code = newCode;
-                }
-            }
-            sc.close();
-        } catch(Exception e) {
-            System.out.println("didn't work :(");
-        }
-        return countries;
-    }
-
-    public static Map<String, Set<String>> adjacencyList() {
-        String inputFile = "GEODATASOURCE-COUNTRY-BORDERS.CSV";
-        Map<String, Set<String>> list = new HashMap<>();
-        List<String> countries = index();
-        for (String code : countries)
-            list.put(code, new HashSet<>());
-
-        try {
-            Scanner sc = new Scanner(new File(inputFile));
-            sc.nextLine();
-            while (sc.hasNext())
-            {
-                String[] line = sc.nextLine().split(",");
-                if (!line[2].equals("\"\""))
-                    list.get(line[1]).add(line[3]);
-            }
-            sc.close();
-        } catch(Exception e) {
-            System.out.println("didn't work :((");
-        }
-        return list;
-    }
-
-    public static Set<String> maximalIndependentSets() {
+    public static Set<String> maximalIndependentSet() {
         Set<String> maxIndepSet = new HashSet<>();
-        Set<String> graphVertices = new HashSet<>(index());
-        Map<String, Set<String>> adjacencyList = adjacencyList();
+        Set<String> graphVertices = new HashSet<>(countries);
+        Map<String, Set<String>> adjacencyList = borders;
         while (!graphVertices.isEmpty()) {
             int minDegree = Integer.MAX_VALUE;
             String minDegreeVertex = "";
@@ -75,7 +33,7 @@ public class searcher {
     }
 
     public static void main(String[] args) {
-        Set<String> maxIndepSet = maximalIndependentSets();
+        Set<String> maxIndepSet = maximalIndependentSet();
         System.out.println(maxIndepSet);
     }
 }
