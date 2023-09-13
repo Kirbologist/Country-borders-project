@@ -40,7 +40,8 @@ public class searcher {
             while (sc.hasNext())
             {
                 String[] line = sc.nextLine().split(",");
-                list.get(line[1]).add(line[3]);
+                if (!line[2].equals("\"\""))
+                    list.get(line[1]).add(line[3]);
             }
             sc.close();
         } catch(Exception e) {
@@ -57,10 +58,14 @@ public class searcher {
             int minDegree = Integer.MAX_VALUE;
             String minDegreeVertex = "";
             for (String country : graphVertices) {
-                if (adjacencyList.get(country).size() < minDegree) {
-                    minDegree = adjacencyList.get(country).size();
+                Set<String> neighbours = adjacencyList.get(country);
+                neighbours.retainAll(graphVertices);
+                if (neighbours.size() < minDegree) {
+                    minDegree = neighbours.size();
                     minDegreeVertex = country;
                 }
+                if (minDegree == 0)
+                    break;
             }
             maxIndepSet.add(minDegreeVertex);
             graphVertices.removeAll(adjacencyList.get(minDegreeVertex));
@@ -71,6 +76,6 @@ public class searcher {
 
     public static void main(String[] args) {
         Set<String> maxIndepSet = maximalIndependentSets();
-        System.out.print(maxIndepSet);
+        System.out.println(maxIndepSet);
     }
 }
