@@ -58,12 +58,20 @@ public class searcher {
                 }
             }
         }
+        System.out.println(distances);
         return new Pair(furthestVertex, eccentricity);
     }
 
+    public static Map<String, Pair<String, Integer>> allEccentricities() {
+        Map<String, Pair<String, Integer>> distances = new HashMap<>();
+        for (String country : countries)
+            distances.put(country, vertexEccentricity(country));
+        return distances;
+    }
+
     public static void main(String[] args) {
-        Pair<String, Integer> test = vertexEccentricity("United States of America");
-        System.out.println(test.getKey());
-        System.out.println(test.getValue());
+        //Map<String, Pair<String, Integer>> distances = allEccentricities();
+        //System.out.println(distances);
+        vertexEccentricity("Lesotho");
     }
 }
