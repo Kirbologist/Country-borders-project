@@ -1,8 +1,7 @@
 package searcher;
 
-import java.io.*;
 import java.util.*;
-import searcher.graph;
+import javafx.util.Pair;
 
 public class searcher {
     public static Set<String> countries = graph.vertices();
@@ -32,8 +31,39 @@ public class searcher {
         return maxIndepSet;
     }
 
+    public static Pair<String, Integer> vertexEccentricity(String baseCountry) {
+        Map<String, Integer> distances = new HashMap<>();
+        for (String country : countries)
+            distances.put(country, Integer.MAX_VALUE);
+        distances.put(baseCountry, 0);
+
+        Queue<String> searchQueue = new LinkedList<>();
+        searchQueue.add(baseCountry);
+        Set<String> visitedSet = new HashSet<>();
+        visitedSet.add(baseCountry);
+        Integer eccentricity = 0;
+        String furthestVertex = "";
+
+        while (!searchQueue.isEmpty()) {
+            String vertex = searchQueue.remove();
+            for (String neighbour : borders.get(vertex)) {
+                if (!visitedSet.contains(neighbour)) {
+                    searchQueue.add(neighbour);
+                    distances.put(neighbour, distances.get(vertex) + 1);
+                    visitedSet.add(neighbour);
+                    if (eccentricity == distances.get(vertex)) {
+                        eccentricity++;
+                        furthestVertex = neighbour;
+                    }
+                }
+            }
+        }
+        return new Pair(furthestVertex, eccentricity);
+    }
+
     public static void main(String[] args) {
-        Set<String> maxIndepSet = maximalIndependentSet();
-        System.out.println(maxIndepSet);
+        Pair<String, Integer> test = vertexEccentricity("United States of America");
+        System.out.println(test.getKey());
+        System.out.println(test.getValue());
     }
 }

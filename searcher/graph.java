@@ -1,10 +1,8 @@
 package searcher;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -19,7 +17,7 @@ public class graph {
             String code = sc.nextLine();
             while (sc.hasNext())
             {
-                String[] line = sc.nextLine().split(",");
+                String[] line = sc.nextLine().replaceAll("\"", "").split(",");
                 String newCode = line[1];
                 if (!newCode.equals(code)) {
                     countries.add(newCode);
@@ -45,8 +43,8 @@ public class graph {
             sc.nextLine();
             while (sc.hasNext())
             {
-                String[] line = sc.nextLine().split(",");
-                if (!line[2].equals("\"\""))
+                String[] line = sc.nextLine().replaceAll("\"", "").split(",");
+                if (line.length > 2)
                     list.get(line[1]).add(line[3]);
             }
             sc.close();
