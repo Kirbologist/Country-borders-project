@@ -14,7 +14,7 @@ public class searcher {
             while (sc.hasNext())
             {
                 String[] line = sc.nextLine().split(",");
-                String newCode = line[0];
+                String newCode = line[1];
                 if (!newCode.equals(code)) {
                     countries.add(newCode);
                     code = newCode;
@@ -27,20 +27,20 @@ public class searcher {
         return countries;
     }
 
-    public static Map<String, List<String>> adjacencyList() {
+    public static Map<String, Set<String>> adjacencyList() {
         String inputFile = "GEODATASOURCE-COUNTRY-BORDERS.CSV";
-        Map<String, List<String>> list = new HashMap<>();
+        Map<String, Set<String>> list = new HashMap<>();
         List<String> countries = index();
         for (String code : countries)
-            list.put(code, new ArrayList<>());
+            list.put(code, new HashSet<>());
 
         try {
             Scanner sc = new Scanner(new File(inputFile));
-            String code = sc.nextLine();
+            sc.nextLine();
             while (sc.hasNext())
             {
                 String[] line = sc.nextLine().split(",");
-                list.get(line[0]).add(line[2]);
+                list.get(line[1]).add(line[3]);
             }
             sc.close();
         } catch(Exception e) {
@@ -49,8 +49,28 @@ public class searcher {
         return list;
     }
 
+    public static Set<String> maximalIndependentSets() {
+        Set<String> maxIndepSet = new HashSet<>();
+        Set<String> graphVertices = new HashSet<>(index());
+        Map<String, Set<String>> adjacencyList = adjacencyList();
+        while (!graphVertices.isEmpty()) {
+            int minDegree = Integer.MAX_VALUE;
+            String minDegreeVertex = "";
+            for (String country : graphVertices) {
+                if (adjacencyList.get(country).size() < minDegree) {
+                    minDegree = adjacencyList.get(country).size();
+                    minDegreeVertex = country;
+                }
+            }
+            maxIndepSet.add(minDegreeVertex);
+            graphVertices.removeAll(adjacencyList.get(minDegreeVertex));
+            graphVertices.remove(minDegreeVertex);
+        }
+        return maxIndepSet;
+    }
+
     public static void main(String[] args) {
-        Map<String, List<String>> list = adjacencyList();
-        System.out.print(list);
+        Set<String> maxIndepSet = maximalIndependentSets();
+        System.out.print(maxIndepSet);
     }
 }
